@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>E:\git_spaces\AspNetCoreJwt\AspNetCoreJwt.Restful\bin\Debug\netcoreapp3.1\AspNetCoreJwt.Restful.xml</DocumentationFile>
+    <OutputPath></OutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.4" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.3" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="5.4.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AspNetCoreJwt.Framework\AspNetCoreJwt.Framework.csproj" />
+    <ProjectReference Include="..\AspNetCoreJwt.RequestDTO\AspNetCoreJwt.RequestDTO.csproj" />
+    <ProjectReference Include="..\AspNetCoreJwt.ResponseDTO\AspNetCoreJwt.ResponseDTO.csproj" />
+  </ItemGroup>
+
+
+</Project>
