@@ -29,7 +29,8 @@ namespace AspNetCoreJwt.Restful
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-            services.AddMemoryCache();
+            services.AddMemoryCache();  // ƒ⁄¥Êª∫¥Ê
+            services.AddHealthChecks(); // Ω°øµºÏ≤‚
 
             // JWT »œ÷§ ⁄»®
             services.AddAuthentication(options =>
@@ -103,6 +104,8 @@ namespace AspNetCoreJwt.Restful
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseHealthChecks("/health"); //  π”√Ω°øµºÏ≤‚
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
