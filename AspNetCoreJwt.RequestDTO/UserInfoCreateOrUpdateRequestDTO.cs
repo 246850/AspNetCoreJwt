@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AspNetCoreJwt.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,7 +10,7 @@ namespace AspNetCoreJwt.RequestDTO
     /// <summary>
     /// 用户信息创建/更新 请求模型
     /// </summary>
-    public class UserInfoCreateOrUpdateRequestDTO
+    public class UserInfoCreateOrUpdateRequestDTO:IHasCreateTime
     {
         /// <summary>
         /// 主键ID
@@ -23,5 +24,9 @@ namespace AspNetCoreJwt.RequestDTO
         /// 年龄
         /// </summary>
         public int Age { get; set; }
+        /// <summary>
+        /// 创建时间
+        /// </summary>
+        public DateTime CreateTime { get; set; }
     }
 }

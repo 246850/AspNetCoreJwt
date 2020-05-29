@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AspNetCoreJwt.Framework;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -28,7 +29,10 @@ namespace AspNetCoreJwt.Restful
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            services.AddControllers(options =>
+            {
+                options.Filters.Add(new DefaultValueFilterAttribute());
+            });
             services.AddMemoryCache();  // ÄÚ´æ»º´æ
             services.AddHealthChecks(); // ½¡¿µ¼ì²â
 

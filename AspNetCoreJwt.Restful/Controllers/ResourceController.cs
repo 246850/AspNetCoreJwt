@@ -52,11 +52,11 @@ namespace AspNetCoreJwt.Restful.Controllers
         /// <param name="request"></param>
         /// <returns></returns>
         [HttpPost]
-        public CodeResult Create(UserInfoCreateOrUpdateRequestDTO request)
+        public CodeResult<UserInfoCreateOrUpdateRequestDTO> Create(UserInfoCreateOrUpdateRequestDTO request)
         {
             // 插入数据...
 
-            return CodeResult.Success();
+            return request.Success();
         }
 
         /// <summary>
