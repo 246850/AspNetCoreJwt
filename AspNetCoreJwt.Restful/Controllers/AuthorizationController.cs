@@ -30,7 +30,7 @@ namespace AspNetCoreJwt.Restful.Controllers
             _cache = cache;
         }
         /// <summary>
-        /// 登录
+        /// 登录 userName = admin, password = 123456
         /// </summary>
         /// <param name="userName"></param>
         /// <param name="password"></param>
