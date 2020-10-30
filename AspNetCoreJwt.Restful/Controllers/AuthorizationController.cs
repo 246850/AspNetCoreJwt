@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using AspNetCoreJwt.Framework;
@@ -47,7 +48,7 @@ namespace AspNetCoreJwt.Restful.Controllers
                     new Claim(JwtRegisteredClaimNames.Jti, jti),
                     new Claim(ClaimTypes.Name, userName)
                 };
-                SigningCredentials credentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:SecurityKey"])), SecurityAlgorithms.HmacSha256);
+                SigningCredentials credentials = BuildRsaCredentials();
                 JwtSecurityToken token = new JwtSecurityToken(Configuration["Jwt:Issuer"], Configuration["Jwt:Audience"], claims, DateTime.Now, DateTime.Now.Add(expires), credentials);
 
                 string tokenString = new JwtSecurityTokenHandler().WriteToken(token);
@@ -69,6 +70,32 @@ namespace AspNetCoreJwt.Restful.Controllers
             _cache.Set(jtiClaims.Value, jtiClaims.Value, TimeSpan.FromHours(2));  // 将token唯一标识存入缓存中， 用于判断当前Token已注销，即使token在有效期内
 
             return CodeResult.Success();
+        }
+
+        /// <summary>
+        /// rs256 非对称签名 - 公钥/私钥
+        /// </summary>
+        /// <returns></returns>
+        SigningCredentials BuildRsaCredentials()
+        {
+            RSA rsa = RSA.Create();
+            rsa.ImportRSAPrivateKey(RsaKeys.FromBase64Url(RsaKeys.RsaPrivateKey), out int reads);
+            SigningCredentials credentials = new SigningCredentials(new RsaSecurityKey(rsa)
+            {
+                CryptoProviderFactory = new CryptoProviderFactory { CacheSignatureProviders = false }
+            }, SecurityAlgorithms.RsaSha256) ;
+
+            return credentials;
+        }
+        /// <summary>
+        /// hs256 对称签名
+        /// </summary>
+        /// <returns></returns>
+        SigningCredentials BuildSymmetricCredentials()
+        {
+            SigningCredentials credentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:SecurityKey"])), SecurityAlgorithms.HmacSha256);
+
+            return credentials;
         }
     }
 }

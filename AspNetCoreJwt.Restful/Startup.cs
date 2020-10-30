@@ -2,6 +2,7 @@ using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using AspNetCoreJwt.Framework;
@@ -43,6 +44,11 @@ namespace AspNetCoreJwt.Restful
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             }).AddJwtBearer(options =>
             {
+                RSA rsa = RSA.Create();
+                rsa.ImportRSAPublicKey(RsaKeys.FromBase64Url(RsaKeys.RsaPublicKey), out int reads);
+
+                SecurityKey securityKey = new RsaSecurityKey(rsa);  // 非对称签名
+                //SecurityKey securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:SecurityKey"]));   // 对称签名
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuer = true,
@@ -52,10 +58,14 @@ namespace AspNetCoreJwt.Restful
                     ValidateLifetime = true, //是否验证失效时间
                     ClockSkew = TimeSpan.FromSeconds(5), // 允许5秒偏差,
                     ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:SecurityKey"]))
+                    IssuerSigningKey = securityKey
                 };
                 options.Events = new JwtBearerEvents
                 {
+                    OnAuthenticationFailed = (context) =>
+                    {
+                        return Task.CompletedTask;
+                    },
                     OnTokenValidated = (context) =>
                         {
                             var jtiClaims = context.Principal.Claims.FirstOrDefault(item => item.Type == JwtRegisteredClaimNames.Jti);
