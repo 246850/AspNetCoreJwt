@@ -13,6 +13,7 @@ using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
@@ -45,7 +46,8 @@ namespace AspNetCoreJwt.Restful
             }).AddJwtBearer(options =>
             {
                 RSA rsa = RSA.Create();
-                rsa.ImportRSAPublicKey(RsaKeys.FromBase64Url(RsaKeys.RsaPublicKey), out int reads);
+                rsa.ImportSubjectPublicKeyInfo(Convert.FromBase64String(RsaKeys.RsaPublicKey8), out int reads);   // pkcs 8
+                //rsa.ImportRSAPublicKey(Convert.FromBase64String(RsaKeys.RsaPublicKey), out int reads);  // pkcs 1
 
                 SecurityKey securityKey = new RsaSecurityKey(rsa);  // 非对称签名
                 //SecurityKey securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:SecurityKey"]));   // 对称签名
@@ -138,6 +140,8 @@ namespace AspNetCoreJwt.Restful
             app.UseAuthentication();
 
             app.UseAuthorization();
+
+            IdentityModelEventSource.ShowPII = true;
 
             app.UseEndpoints(endpoints =>
             {

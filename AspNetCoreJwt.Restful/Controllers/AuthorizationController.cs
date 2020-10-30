@@ -79,7 +79,8 @@ namespace AspNetCoreJwt.Restful.Controllers
         SigningCredentials BuildRsaCredentials()
         {
             RSA rsa = RSA.Create();
-            rsa.ImportRSAPrivateKey(RsaKeys.FromBase64Url(RsaKeys.RsaPrivateKey), out int reads);
+            rsa.ImportPkcs8PrivateKey(Convert.FromBase64String(RsaKeys.RsaPrivateKey8), out int reads); // pkcs 8
+            //rsa.ImportRSAPrivateKey(Convert.FromBase64String(RsaKeys.RsaPrivateKey), out int reads); // pkcs 1
             SigningCredentials credentials = new SigningCredentials(new RsaSecurityKey(rsa)
             {
                 CryptoProviderFactory = new CryptoProviderFactory { CacheSignatureProviders = false }
